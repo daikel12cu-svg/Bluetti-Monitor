@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bluetti Elite 100 V2 • Centro de Control Offline</title>
+  <style>
+    /* =========================================================
+       ESTILOS 100% OFFLINE (NO REQUIERE INTERNET NI FUENTES EXTERNAS)
+       ========================================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background-color: #080b11;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+    .tech-font {
+      font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .mono-font {
+      font-family: "Cascadia Code", "Consolas", "Courier New", monospace;
+    }
+
+    /* Tarjetas Glassmorphism */
+    .glass-card {
+      background: linear-gradient(135deg, rgba(14, 20, 31, 0.95) 0%, rgba(10, 14, 23, 0.98) 100%);
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+    .glass-card:hover {
+      border-color: rgba(0, 240, 255, 0.3);
+    }
+
+    /* Cabecera */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      gap: 16px;
+    }
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00f0ff;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .brand-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-pill {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: rgba(0, 240, 255, 0.15);
+      color: #00f0ff;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      font-family: monospace;
+    }
+    .brand-sub {
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 3px;
+    }
+
+    /* Botones de acción */
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-blue {
+      background: #1d4ed8;
+      color: #ffffff;
+    }
+    .btn-blue:hover {
+      background: #2563eb;
+    }
+    .btn-green {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+    .btn-green:hover {
+      background: rgba(16, 185, 129, 0.25);
+    }
+    .btn-dark {
+      background: #1e293b;
+      border-color: #334155;
+      color: #cbd5e1;
+    }
+    .btn-dark:hover {
+      background: #334155;
+    }
+    .conn-status {
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+    }
+
+    /* Grid Principal 3 Columnas */
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .panel-card {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .big-watt {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .sub-item {
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #1e293b;
+    }
+    .sub-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+    .sub-data {
+      font-size: 11px;
+      color: #94a3b8;
+      font-family: monospace;
+      margin-top: 4px;
+    }
+
+    /* Anillo Circular Central de Batería */
+    .battery-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+    .ring-container {
+      position: relative;
+      width: 190px;
+      height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+    }
+    .ring-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .ring-bg {
+      stroke: #1e293b;
+      stroke-width: 12;
+      fill: transparent;
+    }
+    .ring-bar {
+      stroke: #00ff88;
+      stroke-width: 12;
+      fill: transparent;
+      stroke-linecap: round;
+      stroke-dasharray: 427.25;
+      stroke-dashoffset: 68.36;
+      transition: stroke-dashoffset 0.6s ease, stroke 0.6s ease;
+    }
+    .ring-text {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .soc-num {
+      font-size: 46px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    /* Conmutadores de Control Modbus */
+    .ctrl-section {
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .switches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .switch-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100px;
+      transition: all 0.2s ease;
+    }
+    .switch-card:hover {
+      border-color: rgba(0, 240, 255, 0.4);
+    }
+    .switch-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+    }
+    .switch-state {
+      font-size: 16px;
+      font-weight: 800;
+      color: #94a3b8;
+      margin-top: 8px;
+    }
+    .switch-desc {
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    /* Gráfica Canvas */
+    .chart-container {
+      width: 100%;
+      height: 130px;
+      background: #030712;
+      border-radius: 12px;
+      padding: 8px;
+      border: 1px solid #111827;
+      margin-top: 12px;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Modo Gamer HUD Overlay */
+    .gamer-hud-overlay {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 320px;
+      background: rgba(10, 14, 23, 0.95);
+      border: 1px solid #00f0ff;
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+      border-radius: 16px;
+      padding: 16px;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABECERA -->
+  <header class="glass-card">
+    <div class="brand-box">
+      <div class="brand-icon">⚡</div>
+      <div>
+        <div class="brand-title">
+          <span>BLUETTI ELITE 100 V2</span>
+          <span class="badge-pill">100% OFFLINE</span>
+        </div>
+        <div class="brand-sub">
+          <span>MAC: <strong id="devMac" class="mono-font" style="color: #cbd5e1;">DC:B4:D9:54:78:1A</strong></span>
+          <span>•</span>
+          <span style="color: #34d399; font-weight: 600;">Enlace Directo Bluetooth BLE (Sin Cuentas)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTONES SUPERIORES -->
+    <div class="btn-group">
+      <button class="btn btn-blue" onclick="toggleGamerHud()">🎮 HUD Flotante</button>
+      <button id="btnSim" class="btn btn-green" onclick="toggleSimulation()">🧪 Modo Demo</button>
+      <button class="btn btn-dark" onclick="toggleBleRelease()">⏸ Liberar BLE Móvil</button>
+      <div class="conn-status">
+        <span class="pulse-dot"></span>
+        <span id="connStatusText">Enlace Cifrado Local Activo</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- DASHBOARD PRINCIPAL -->
+  <main id="mainDashboard">
+
+    <!-- 1. DIAGRAMA 3 COLUMNAS -->
+    <section class="grid-3col">
+
+      <!-- ENTRADAS -->
+      <div class="glass-card panel-card">
+        <div>
+          <div class="card-header">
+            <span>Entrada Total</span>
+            <span class="badge-pill" style="color:#38bdf8; border-color:#0284c7;">Max 1200W</span>
+          </div>
+          <div class="big-watt" style="color: #00f0ff;">
+            <span id="totalInWatts">0</span> <span style="font-size: 16px; color:#94a3b8;">W</span>
+          </div>
+
+          <!-- Solar -->
+          <div class="sub-item" style="border-color: #332a10;">
+            <div class="sub-row">
+              <span style="color:#fbbf24; font-weight:700;">☀️ Solar MPPT</span>
+              <strong id="solarWatts" style="color:#fde047; font-size:15px;">0 W</strong>
+            </div>
+            <div class="sub-data">
+              <span id="solarVolts">38.4 V</span> • <span id="solarAmps">0.0 A</span>
+            </div>
+          </div>
+
+          <!-- Red AC -->
+          <div class="sub-item" style="border-color: #102035;">
+            <div class="sub-row">
+              <span style="color:#38bdf8; font-weight:700;">🔌 Red Eléctrica AC</span>
+              <strong id="acInWatts" style="color:#60a5fa; font-size:15px;">0 W</strong>
+            </div>
+            <div class="sub-data">
+              <span id="acInVolts">120.0 V</span> • <span id="acInAmps">0.0 A</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:11px; color:#64748b; margin-top:10px; display:flex; justify-content:space-between;">
+          <span>Autonomía de Carga:</span>
+          <strong id="chargeTimeEstimate" style="color:#cbd5e1;">Batería Lista</strong>
+        </div>
+      </div>
+
+      <!-- BATERÍA CENTRAL -->
+      <div class="glass-card panel-card battery-center">
+        <div class="card-header" style="width: 100%;">
+          <span>Batería Principal</span>
+          <span class="badge-pill" style="color:#34d399; border-color:#059669;">LiFePO4 51.2V</span>
+        </div>
+
+        <div class="ring-container">
+          <svg class="ring-svg" viewBox="0 0 160 160">
+            <circle class="ring-bg" cx="80" cy="80" r="68"></circle>
+            <circle id="socRing" class="ring-bar" cx="80" cy="80" r="68"></circle>
+          </svg>
+          <div class="ring-text">
+            <span id="socPercentage" class="soc-num">84</span>
+            <span style="font-size:12px; font-weight:bold; color:#94a3b8; margin-top:-4px;">%</span>
+            <span id="batteryNetStatus" class="badge-pill" style="margin-top:6px; background:#1e293b; color:#cbd5e1; border-color:#334155;">En Espera</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; margin-top:8px;">
+          <div class="sub-item" style="text-align:center; padding:8px;">
+            <div style="font-size:10px; color:#64748b; text-transform:uppercase;">Capacidad</div>
+            <strong id="whEstimate" class="mono-font" style="font-size:12px; color:#f1f5f9;">860 / 1024 Wh</strong>
+          </div>
+          <div class="sub-item" style="text-align:center; padding:8px;">
+            <div style="font-size:10px; color:#64748b; text-transform:uppercase;">Voltaje Pack</div>
+            <strong id="batteryVolts" class="mono-font" style="font-size:12px; color:#f1f5f9;">51.2 V</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- SALIDAS -->
+      <div class="glass-card panel-card">
+        <div>
+          <div class="card-header">
+            <span>Salida Total</span>
+            <span class="badge-pill" style="color:#f43f5e; border-color:#e11d48;">Max 1800W / 2700W</span>
+          </div>
+          <div class="big-watt" style="color: #ff3366;">
+            <span id="totalOutWatts">0</span> <span style="font-size: 16px; color:#94a3b8;">W</span>
+          </div>
+
+          <!-- Inversor AC -->
+          <div class="sub-item" style="border-color: #35101a;">
+            <div class="sub-row">
+              <span style="color:#f87171; font-weight:700;">⚡ Tomas AC (1800W)</span>
+              <strong id="acOutWatts" style="color:#fb7185; font-size:15px;">0 W</strong>
+            </div>
+            <div class="sub-data">120V • Pura Onda Sinusoidal</div>
+          </div>
+
+          <!-- Salidas DC -->
+          <div class="sub-item" style="border-color: #2d1035;">
+            <div class="sub-row">
+              <span style="color:#c084fc; font-weight:700;">🔋 Salidas DC (USB/12V)</span>
+              <strong id="dcOutWatts" style="color:#d8b4fe; font-size:15px;">0 W</strong>
+            </div>
+            <div class="sub-data">USB-C 140W+100W • 12V 10A</div>
+          </div>
+        </div>
+
+        <div style="font-size:11px; color:#64748b; margin-top:10px; display:flex; justify-content:space-between;">
+          <span>Autonomía de Descarga:</span>
+          <strong id="dischargeTimeEstimate" style="color:#cbd5e1;">> 24 Horas</strong>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 2. CONMUTADORES MODBUS -->
+    <section class="glass-card ctrl-section">
+      <div class="card-header">
+        <span>⚙️ Interruptores de Hardware (Comandos Modbus Cifrados)</span>
+        <span style="font-size:11px; color:#64748b;">Respuesta Inmediata Local</span>
+      </div>
+
+      <div class="switches-grid">
+        <!-- Switch AC -->
+        <div class="switch-card" onclick="toggleAc()">
+          <div class="switch-top">
+            <span>Inversor AC (1800W)</span>
+            <span id="acIndicator" class="status-dot"></span>
+          </div>
+          <div>
+            <div id="acStateText" class="switch-state">APAGADO</div>
+            <div class="switch-desc">Tomas de corriente 120V</div>
+          </div>
+        </div>
+
+        <!-- Switch DC -->
+        <div class="switch-card" onclick="toggleDc()">
+          <div class="switch-top">
+            <span>Puertos DC (USB/12V)</span>
+            <span id="dcIndicator" class="status-dot"></span>
+          </div>
+          <div>
+            <div id="dcStateText" class="switch-state">APAGADO</div>
+            <div class="switch-desc">Puertos USB y encendedor 12V</div>
+          </div>
+        </div>
+
+        <!-- Switch ECO -->
+        <div class="switch-card" onclick="toggleEco()">
+          <div class="switch-top">
+            <span>Modo ECO</span>
+            <span id="ecoIndicator" class="status-dot" style="background:#00ff88; box-shadow:0 0 8px #00ff88;"></span>
+          </div>
+          <div>
+            <div id="ecoStateText" class="switch-state" style="color:#00ff88;">ACTIVADO</div>
+            <div class="switch-desc">Auto-apagado por inactividad</div>
+          </div>
+        </div>
+
+        <!-- Switch Refuerzo de Red (Grid Self-Adaptation) -->
+        <div class="switch-card" onclick="toggleGrid()">
+          <div class="switch-top">
+            <span>Refuerzo Red</span>
+            <span id="gridIndicator" class="status-dot"></span>
+          </div>
+          <div>
+            <div id="gridStateText" class="switch-state">DESACTIVADO</div>
+            <div class="switch-desc">Adaptación generador / red inestable</div>
+          </div>
+        </div>
+
+        <!-- Switch Power Lifting -->
+        <div class="switch-card" onclick="togglePl()">
+          <div class="switch-top">
+            <span>Power Lifting (2700W)</span>
+            <span id="plIndicator" class="status-dot"></span>
+          </div>
+          <div>
+            <div id="plStateText" class="switch-state">DESACTIVADO</div>
+            <div class="switch-desc">Cargas resistivas de alta potencia</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. GRÁFICA EN TIEMPO REAL -->
+    <section class="glass-card" style="padding:16px;">
+      <div class="card-header">
+        <span>Monitor de Potencia en Vivo (60 FPS)</span>
+        <div style="display:flex; gap:14px; font-size:11px;">
+          <span style="color:#00f0ff;">■ Entrada (W)</span>
+          <span style="color:#ff3366;">■ Salida (W)</span>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="liveChart"></canvas>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODO GAMER HUD FLOTANTE -->
+  <div id="gamerHudOverlay" class="gamer-hud-overlay">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1e293b; padding-bottom:8px; margin-bottom:10px;">
+      <strong style="color:#00f0ff; font-size:12px;">⚡ BLUETTI HUD GAMER</strong>
+      <button class="btn btn-dark" style="padding:4px 8px; font-size:10px;" onclick="toggleGamerHud()">✕ Volver</button>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;">
+      <div>
+        <span style="font-size:10px; color:#64748b;">BATERÍA</span>
+        <div style="font-size:32px; font-weight:800; color:#00ff88;"><span id="hudSoc">84</span>%</div>
+      </div>
+      <div style="text-align:right;">
+        <span style="font-size:10px; color:#64748b;">FLUJO NETO</span>
+        <div id="hudNet" style="font-size:14px; font-weight:700; color:#ffffff;">0 W</div>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:10px;">
+      <div class="sub-item" style="padding:6px;">
+        <div style="font-size:9px; color:#00f0ff; font-weight:bold;">ENTRADA</div>
+        <strong id="hudIn" style="font-size:13px; color:#ffffff;">0 W</strong>
+      </div>
+      <div class="sub-item" style="padding:6px;">
+        <div style="font-size:9px; color:#ff3366; font-weight:bold;">SALIDA</div>
+        <strong id="hudOut" style="font-size:13px; color:#ffffff;">0 W</strong>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+      <button class="btn btn-dark" onclick="toggleAc()" style="font-size:11px; justify-content:center;">AC 1800W</button>
+      <button class="btn btn-dark" onclick="toggleDc()" style="font-size:11px; justify-content:center;">Puertos DC</button>
+    </div>
+  </div>
+
+  <script>
+    let state = {
+      soc: 84,
+      dc_input_watts: 0,
+      dc_input_volts: 38.4,
+      dc_input_current: 0.0,
+      ac_input_watts: 0,
+      ac_input_volts: 120.0,
+      ac_input_current: 0.0,
+      ac_output_watts: 0,
+      dc_output_watts: 0,
+      battery_volts: 51.2,
+      ac_output_on: false,
+      dc_output_on: false,
+      eco_mode_on: true,
+      power_lifting_on: false,
+      grid_enhancement_on: false,
+      simulation: false
+    };
+
+    let chartHistory = { inWatts: Array(30).fill(0), outWatts: Array(30).fill(0) };
+    const canvas = document.getElementById('liveChart');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function drawChart() {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const w = canvas.width;
+      const h = canvas.height;
+      const maxVal = Math.max(1200, ...chartHistory.inWatts, ...chartHistory.outWatts);
+
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      for (let y = 0; y < h; y += h / 3) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // In Watts (Cyan)
+      ctx.strokeStyle = '#00f0ff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      chartHistory.inWatts.forEach((val, i) => {
+        const x = (i / (chartHistory.inWatts.length - 1)) * w;
+        const y = h - (val / maxVal) * (h - 10) - 5;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      // Out Watts (Rosa)
+      ctx.strokeStyle = '#ff3366';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      chartHistory.outWatts.forEach((val, i) => {
+        const x = (i / (chartHistory.outWatts.length - 1)) * w;
+        const y = h - (val / maxVal) * (h - 10) - 5;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    function renderUI() {
+      const inW = (state.dc_input_watts || 0) + (state.ac_input_watts || 0);
+      const outW = (state.ac_output_watts || 0) + (state.dc_output_watts || 0);
+      const net = inW - outW;
+      const soc = Math.min(100, Math.max(0, state.soc || 84));
+
+      document.getElementById('totalInWatts').innerText = inW;
+      document.getElementById('solarWatts').innerText = `${state.dc_input_watts || 0} W`;
+      document.getElementById('solarVolts').innerText = `${(state.dc_input_volts || 38.4).toFixed(1)} V`;
+      document.getElementById('solarAmps').innerText = `${(state.dc_input_current || 0).toFixed(1)} A`;
+      document.getElementById('acInWatts').innerText = `${state.ac_input_watts || 0} W`;
+      document.getElementById('acInVolts').innerText = `${(state.ac_input_volts || 120.0).toFixed(1)} V`;
+      document.getElementById('acInAmps').innerText = `${(state.ac_input_current || 0).toFixed(1)} A`;
+
+      document.getElementById('socPercentage').innerText = soc;
+      const ring = document.getElementById('socRing');
+      const offset = 427.25 - (soc / 100) * 427.25;
+      ring.style.strokeDashoffset = offset;
+      ring.style.stroke = soc > 50 ? '#00ff88' : (soc > 20 ? '#fbbf24' : '#ff3366');
+
+      document.getElementById('whEstimate').innerText = `${Math.round(soc * 10.24)} / 1024 Wh`;
+      document.getElementById('batteryVolts').innerText = `${(state.battery_volts || 51.2).toFixed(1)} V`;
+
+      document.getElementById('totalOutWatts').innerText = outW;
+      document.getElementById('acOutWatts').innerText = `${state.ac_output_watts || 0} W`;
+      document.getElementById('dcOutWatts').innerText = `${state.dc_output_watts || 0} W`;
+
+      const netBadge = document.getElementById('batteryNetStatus');
+      if (net > 5) {
+        netBadge.innerText = `Cargando (+${net}W)`;
+        netBadge.style.background = 'rgba(0, 240, 255, 0.2)';
+        netBadge.style.color = '#00f0ff';
+      } else if (net < -5) {
+        netBadge.innerText = `Descargando (${net}W)`;
+        netBadge.style.background = 'rgba(255, 51, 102, 0.2)';
+        netBadge.style.color = '#ff3366';
+      } else {
+        netBadge.innerText = 'En Espera';
+        netBadge.style.background = '#1e293b';
+        netBadge.style.color = '#94a3b8';
+      }
+
+      setSwitchUI('ac', state.ac_output_on, '#ff3366');
+      setSwitchUI('dc', state.dc_output_on, '#00f0ff');
+      setSwitchUI('eco', state.eco_mode_on, '#00ff88');
+      setSwitchUI('grid', state.grid_enhancement_on, '#f59e0b');
+      setSwitchUI('pl', state.power_lifting_on, '#fbbf24');
+
+      document.getElementById('hudSoc').innerText = soc;
+      document.getElementById('hudNet').innerText = `${net >= 0 ? '+' : ''}${net} W`;
+      document.getElementById('hudIn').innerText = `${inW} W`;
+      document.getElementById('hudOut').innerText = `${outW} W`;
+
+      chartHistory.inWatts.push(inW);
+      chartHistory.inWatts.shift();
+      chartHistory.outWatts.push(outW);
+      chartHistory.outWatts.shift();
+      drawChart();
+    }
+
+    function setSwitchUI(id, active, color) {
+      const dot = document.getElementById(`${id}Indicator`);
+      const txt = document.getElementById(`${id}StateText`);
+      if (active) {
+        dot.style.background = color;
+        dot.style.boxShadow = `0 0 10px ${color}`;
+        txt.innerText = id === 'eco' || id === 'pl' ? 'ACTIVADO' : 'ENCENDIDO';
+        txt.style.color = color;
+      } else {
+        dot.style.background = '#334155';
+        dot.style.boxShadow = 'none';
+        txt.innerText = id === 'eco' || id === 'pl' ? 'DESACTIVADO' : 'APAGADO';
+        txt.style.color = '#94a3b8';
+      }
+    }
+
+    function sendCommand(cmd, data) {
+      fetch(`/api/command/${cmd}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {});
+    }
+
+    function toggleAc() {
+      state.ac_output_on = !state.ac_output_on;
+      if (state.simulation) state.ac_output_watts = state.ac_output_on ? 150 : 0;
+      sendCommand('set_ac_output', { turn_on: state.ac_output_on });
+      renderUI();
+    }
+
+    function toggleDc() {
+      state.dc_output_on = !state.dc_output_on;
+      if (state.simulation) state.dc_output_watts = state.dc_output_on ? 35 : 0;
+      sendCommand('set_dc_output', { turn_on: state.dc_output_on });
+      renderUI();
+    }
+
+    function toggleEco() {
+      state.eco_mode_on = !state.eco_mode_on;
+      sendCommand('set_eco_mode', { turn_on: state.eco_mode_on });
+      renderUI();
+    }
+
+    function togglePl() {
+      state.power_lifting_on = !state.power_lifting_on;
+      sendCommand('set_power_lifting', { turn_on: state.power_lifting_on });
+      renderUI();
+    }
+
+    function toggleGrid() {
+      state.grid_enhancement_on = !state.grid_enhancement_on;
+      sendCommand('set_grid_enhancement', { turn_on: state.grid_enhancement_on });
+      renderUI();
+    }
+
+    function toggleSimulation() {
+      state.simulation = !state.simulation;
+      document.getElementById('btnSim').innerText = state.simulation ? '🧪 Demo Activo' : '🧪 Modo Demo';
+      sendCommand('toggle_simulation', { enabled: state.simulation });
+      renderUI();
+    }
+
+    function toggleBleRelease() {
+      sendCommand('release_ble', {});
+      document.getElementById('connStatusText').innerText = 'BLE Liberado para Móvil';
+    }
+
+    function toggleGamerHud() {
+      const hud = document.getElementById('gamerHudOverlay');
+      hud.style.display = hud.style.display === 'block' ? 'none' : 'block';
+    }
+
+    setInterval(() => {
+      fetch('/api/telemetry')
+        .then(r => r.json())
+        .then(d => { if (d) { Object.assign(state, d); renderUI(); } })
+        .catch(() => {
+          if (state.simulation) {
+            if (state.ac_output_on) state.ac_output_watts = 140 + Math.floor(Math.random() * 20);
+            if (state.dc_output_on) state.dc_output_watts = 30 + Math.floor(Math.random() * 15);
+            renderUI();
+          }
+        });
+    }, 1200);
+
+    renderUI();
+  </script>
+</body>
+</html>

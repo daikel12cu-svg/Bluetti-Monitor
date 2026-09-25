@@ -1,0 +1,27 @@
+====================================================================
+  BLUETTI ELITE 100 V2 - HUD GAMER FLOTANTE PARA WINDOWS 10 / 11
+====================================================================
+
+Para iniciar o compilar la aplicacion flotante de Windows:
+
+OPCION 1: Compilar a ejecutable .EXE (Recomendado)
+--------------------------------------------------------
+1. Asegurate de tener Python instalado desde https://www.python.org/downloads/
+   (Recuerda marcar la casilla "Add python.exe to PATH" durante la instalacion).
+2. Haz doble clic en el archivo:
+   👉 COMPILAR_HUD_WINDOWS.bat
+3. El script instalara automaticamente las dependencias y creara tu .exe en:
+   windows_hud\dist\BluettiEliteHUD\BluettiEliteHUD.exe
+
+OPCION 2: Ejecutar de inmediato sin compilar
+-------------------------------------------
+1. Haz doble clic en el archivo:
+   👉 EJECUTAR_HUD_WINDOWS.bat
+
+Los archivos fuente de Python se encuentran dentro de la carpeta:
+📁 windows_hud/
+   - ble_manager.py (Conexion Bluetooth BLE y protocolo Modbus RTU)
+   - hud_app.py (Ventana flotante translucida a 1 pixel del borde)
+   - requirements.txt (Librerias bleak y customtkinter)
+   - build_exe.bat (Compilador de PyInstaller)
+   - run.bat (Lanzador)

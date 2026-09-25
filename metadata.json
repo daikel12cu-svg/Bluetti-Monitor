@@ -1,0 +1,6 @@
+{
+  "name": "Bluetti Elite 100 V2 - HUD & Controller",
+  "description": "Monitor and control widget for Bluetti Elite 100 V2 power station over BLE Modbus RTU with live Web Bluetooth, Gamer HUD overlay, packet inspector, and ready-to-run Python desktop scripts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
